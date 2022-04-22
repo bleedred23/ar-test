@@ -19,6 +19,8 @@
     </ul>
 
     <button onclick="handleButton(this.id)" id="1">Ответить</button>
+
+    <div id="wrong-block" hidden></div>
   </body>
   <script>
     let rightAnswers = [
@@ -88,15 +90,23 @@
 
     let score = 0;
 
+    let wrongAnswers = [];
+    let wrongCounter = 0;
+
     function handleButton(buttonId)
     {
+      
+      let q = document.getElementById("question")
+      let l1 = document.getElementById("l1")
+      let l2 = document.getElementById("l2")
+      let l3 = document.getElementById("l3")
+
       // Получаем оценку за текущий вопрос
       let button = document.getElementById(buttonId);
       id = parseInt(buttonId)
       let rightAnswer = rightAnswers[id - 1]
       let inputs = document.querySelectorAll('input')
       let myAnswer = 0
-      console.log(inputs)
       inputs.forEach(input => {
         if (input.checked) {
           myAnswer = input.value
@@ -104,6 +114,21 @@
       });
       if (rightAnswer == myAnswer) {
         score++
+      }
+      else {
+        if (id == 1) {
+          wrongAnswers.push([
+            q.textContent,
+            myAnswer == 1 ? l1.textContent : l3.textContent,
+            l2.textContent
+          ])
+        }
+        else {
+          wrongAnswers.push([
+            answers[id - 2][0],
+            answers[id - 2][myAnswer],
+            answers[id - 2][rightAnswer]])
+        }
       }
 
       // Меняем информацию на странице
@@ -128,17 +153,34 @@
 
         h3 = document.getElementsByTagName('h3')[0]
         h3.textContent = "Количество правильных ответов: " + score.toString() + "/10. Ваша оценка - " + points.toString() + "."
+        if (wrongAnswers.length > 0) {
+            let wrongDivAll = document.createElement('div')
+          wrongAnswers.forEach(questionInfo => {
+            let wrongDiv = document.createElement('div')
+            let wrongADiv = document.createElement('div')
+            wrongADiv.style.color = "red"
+            let wrongQ = document.createTextNode("Вопрос: " + questionInfo[0])
+            let wrongA = document.createTextNode("Ваш ответ: " + questionInfo[1])
+            wrongADiv.appendChild(wrongA)
+            let rightA = document.createTextNode("Правильный ответ: " + questionInfo[2])
+            let rightADiv = document.createElement('div')
+            rightADiv.style.color = "green"
+            rightADiv.appendChild(rightA)
+            
+            wrongDiv.appendChild(wrongQ)
+            wrongDiv.appendChild(wrongADiv)
+            wrongDiv.appendChild(rightADiv)
+            let hiddenDiv = document.getElementById("wrong-block")
+            hiddenDiv.hidden = false
+            document.body.insertBefore(wrongDiv, hiddenDiv)
+          })
+        }
         return
       }
       button.id = id + 1
-      let q = document.getElementById("question")
-      console.log(q)
       q.textContent = answers[id - 1][0]
-      let l1 = document.getElementById("l1")
       l1.textContent = answers[id - 1][1]
-      let l2 = document.getElementById("l2")
       l2.textContent = answers[id - 1][2]
-      let l3 = document.getElementById("l3")
       l3.textContent = answers[id - 1][3]
 
     }
