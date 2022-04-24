@@ -119,8 +119,8 @@
         if (id == 1) {
           wrongAnswers.push([
             q.textContent,
-            myAnswer == 1 ? l1.textContent : l3.textContent,
-            l2.textContent
+            myAnswer == 1 ? l1.textContent : myAnswer == 2 ? l2.textContent : l3.textContent,
+            rightAnswer == 1 ? l1.textContent : rightAnswer == 2 ? l2.textContent : l3.textContent
           ])
         }
         else {
@@ -170,6 +170,7 @@
             wrongDiv.appendChild(wrongQ)
             wrongDiv.appendChild(wrongADiv)
             wrongDiv.appendChild(rightADiv)
+            wrongDiv.classList.add("very-wrong-div")
             let hiddenDiv = document.getElementById("wrong-block")
             hiddenDiv.hidden = false
             document.body.insertBefore(wrongDiv, hiddenDiv)
